@@ -43,14 +43,3 @@ class Barco:
     def __str__(self):
         return f"Barco: {self.__nombre} | Tamaño: {self.__getSize} | Coordenadas: {self.__coords}"
 
-
-b  = Barco("lancha")
-b2 = Barco("corbeta")
-b22 = Barco("corbeta")
-b3 = Barco("fragata")
-b4 = Barco("acorazado")
-print(b)
-print(b2)
-print(b22)
-print(b3)
-print(b4)

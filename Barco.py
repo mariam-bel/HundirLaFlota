@@ -1,20 +1,23 @@
 import random
 
-
 class Barco:
     barcos = ["lancha","corbeta","fragata","acorazado"]
-    coords = []
+    todasCoordenadas = []
     def __init__(self, nombre):
         if nombre in self.barcos:
             self.__nombre = nombre.lower()
         else:
             raise NameError("Introduzca un barco correcto.")
         self.__size = self.__getSize
-        self.__coords = self.__generateCoords(self.__size, self.coords)
+        self.__coords = self.__generateCoords(self.__size, self.todasCoordenadas)
 
-
-    def __getNombre(self):
+    @property
+    def nombre(self):
         return self.__nombre
+
+    @property
+    def coords(self):
+        return self.__coords
 
     @property
     def __getSize(self):
@@ -31,15 +34,38 @@ class Barco:
 
     @staticmethod
     def __generateCoords(size, coords):
-        coordenadasBarco = []
-        for i in range(size):
-            coord = [random.randint(0,10),random.randint(0,10)]
-            while coord in coords:
-                coord = [random.randint(0, 10), random.randint(0, 10)]
-            coordenadasBarco.append(coord)
-            coords.append(coord)
-        return coordenadasBarco
+        while True:
+            orientacion = random.randint(0,1)
+
+            if orientacion == 0:
+                fila = random.randint(0,9)
+                col_inicio = random.randint(0,9-size)
+                coordenada = [[fila,col_inicio + i] for i in range(size)]
+            else:
+                col = random.randint(0, 9)
+                fila_inicio = random.randint(0, 9 - size)
+                coordenada = [[fila_inicio + i, col] for i in range(size)]
+            coords.append(coordenada)
+
+            if any(c in coords for c in coordenada):
+                continue
+            return coordenada
 
     def __str__(self):
         return f"Barco: {self.__nombre} | Tamaño: {self.__getSize} | Coordenadas: {self.__coords}"
+
+
+
+b  = Barco("lancha")
+b2 = Barco("corbeta")
+b3 = Barco("corbeta")
+b4 = Barco("corbeta")
+b5 = Barco("fragata")
+b6 = Barco("acorazado")
+print(b)
+print(b2)
+print(b3)
+print(b4)
+print(b5)
+print(b6)
 

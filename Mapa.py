@@ -1,37 +1,43 @@
 class Mapa:
     def __init__(self):
-        self.size = 10
-        self.mapa = [["~"for _ in range(self.size)] for _ in range(self.size)]
+        self.mapa = []
+        self.generarMapaVacio()
 
-    # Aleatorio
-    def generarBarco(self,barco):
-        for fila,col in barco.coords:
-            self.mapa[fila][col] = barco.icono
+    def colocarBarco(self,barco):
+        for coord in barco.coords:
+            fila = coord[0]
+            col = coord[1]
+            self.mapa[fila][col]="⛵"
 
-    #Manual
-    def generarBarcoManual(self,barco,coords):
-        if len(coords) != barco.size:
-            raise ValueError("Las coordenadas deben ser acorde al mapa.")
-        if not self.validarCoords(coords):
-            raise ValueError("Coordenadas fuera del mapa.")
-        barco.coords = coords
-        for f,c in coords:
-            self.mapa[f][c] = barco.icono
-
-    def disparo(self,fila,col):
-        celda = self.mapa[fila][col]
-        if celda =="~":
-            self.mapa[fila][col] = "."
-            return "Has tocado agua"
-        if celda == "⛵":
-            self.mapa[fila][col] = "🔥"
-            return "¡Barco tocado!"
-        if celda in [".", "🔥"]:
-            raise ValueError("Ya has disparado en esta posición.")
-
-    def generarMapa(self):
-        mapa = []
+    def generarMapaVacio(self):
         for i in range(10):
-            mapa.append([])
+            fila = []
             for j in range(10):
-                mapa[i].append("~")
+                fila.append("~")
+            self.mapa.append(fila)
+
+    def imprimir(self):
+        print("    A   B   C   D   E   F   G   H   I   J")
+        for i in range(10):
+            if i != 9:
+                print(f"{i + 1}  {self.mapa[i]}")
+            else:
+                print(f"{i + 1} {self.mapa[i]}")
+
+    def disparar(self, fila,col):
+        if self.mapa[fila][col] == "⛵":
+            self.mapa[fila][col] = "🔥"
+            return "tocado"
+        elif self.mapa[fila][col] == "~":
+            self.mapa[fila][col] = "."
+            return "agua"
+        else:
+            return "¡Zona ya disparada!"
+
+    def mostrarMapa(self):
+        print("    A   B   C   D   E   F   G   H   I   J")
+        for i in range(10):
+            if i < 9:
+                print(f"{i + 1}   {self.mapa[i]}")
+            else:
+                print(f"{i + 1}  {self.mapa[i]}")

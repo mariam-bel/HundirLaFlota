@@ -1,74 +1,55 @@
 import random
 
 class Barco:
-    barcos = ["lancha","corbeta","fragata","acorazado"]
+    tamanyos = {
+        "lancha": 1,
+        "corbeta": 2,
+        "fragata": 3,
+        "acorazado": 4
+    }
+
     todasCoordenadas = []
+
     def __init__(self, nombre):
-        if nombre in self.barcos:
-            self.__nombre = nombre.lower()
-        else:
-            raise NameError("Introduzca un barco correcto.")
-        self.__size = self.__getSize
-        self.__coords = self.__generateCoords(self.__size, self.todasCoordenadas)
+        nombre = nombre.lower()
 
-    @property
-    def nombre(self):
-        return self.__nombre
+        if nombre not in Barco.tamanyos:
+            raise Exception("Tipo de barco no válido.")
 
-    @property
-    def coords(self):
-        return self.__coords
+        self.nombre = nombre
+        self.tamanyo = Barco.tamanyos[nombre]
+        self.coords = self.generarCoords()
 
-    @property
-    def __getSize(self):
-        size = 0
-        if(self.__nombre == "lancha"):
-            size = 1
-        if(self.__nombre == "corbeta"):
-            size = 2
-        if(self.__nombre == "fragata"):
-            size = 3
-        if(self.__nombre == "acorazado"):
-            size = 4
-        return size
+    def generarCoords(self):
+        generado = False
 
-    @staticmethod
-    def __generateCoords(size, coords):
-        while True:
-            orientacion = random.randint(0,1)
+        while not generado:
+            orientacion = random.randint(0, 1)
+            coordenadas = []
 
             if orientacion == 0:
-                fila = random.randint(0,9)
-                col_inicio = random.randint(0,9-size)
-                coordenada = [[fila,col_inicio + i] for i in range(size)]
+                fila = random.randint(0, 9)
+                col_inicio = random.randint(0, 9 - self.tamanyo)
+                for i in range(self.tamanyo):
+                    coordenadas.append([fila, col_inicio + i])
+
             else:
                 col = random.randint(0, 9)
-                fila_inicio = random.randint(0, 9 - size)
-                coordenada = [[fila_inicio + i, col] for i in range(size)]
+                fila_inicio = random.randint(0, 9 - self.tamanyo)
+                for i in range(self.tamanyo):
+                    coordenadas.append([fila_inicio + i, col])
 
-            if any(c in coords for c in coordenada):
-                continue
+            valido = True
+            for c in coordenadas:
+                if c in Barco.todasCoordenadas:
+                    valido = False
+                    break
 
-            for c in coordenada:
-                coords.append(c)
+            if valido:
+                for c in coordenadas:
+                    Barco.todasCoordenadas.append(c)
+                generado = True
 
-            return coordenada
-
+        return coordenadas
     def __str__(self):
-        return f"Barco: {self.__nombre} | Tamaño: {self.__getSize} | Coordenadas: {self.__coords}"
-
-
-
-b  = Barco("lancha")
-b2 = Barco("corbeta")
-b3 = Barco("corbeta")
-b4 = Barco("corbeta")
-b5 = Barco("fragata")
-b6 = Barco("acorazado")
-print(b)
-print(b2)
-print(b3)
-print(b4)
-print(b5)
-print(b6)
-
+        return f"Barco: {self.nombre} Coordendas: ({self.coords}) Tamaño: {self.tamanyo}"

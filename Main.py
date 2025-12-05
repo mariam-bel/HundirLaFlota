@@ -1,57 +1,57 @@
+from Jugador import Jugador
 from Barco import Barco
-from Mapa import generarMapaVacio, printMapa, generarMapaLleno
 
-mapa = []
-generarMapaVacio(mapa)
+jugador1 = Jugador("A")
+jugador2 = Jugador("B")
 
-printMapa(mapa)
+barcosAcolocar = ["acorazado", "fragata", "fragata", "corbeta", "corbeta", "lancha", "lancha", "lancha"]
 
-"""
-    Necesitamos:
-        1 portaaviones
-        3 lanchas 
-        2 corbetas
-        2 fragats
-"""
+for nombre in barcosAcolocar:
+    b1 = Barco(nombre)
+    jugador1.mapa.colocarBarco(b1)
+    b2 = Barco(nombre)
+    jugador2.mapa.colocarBarco(b2)
 
-def generarBarcos(mapa,posicion, icono = "⛵"):
-    for fila,col in posicion:
-        mapa[fila][col] = icono
-
-def generarPosDisparo(mapa):
-    pos = (int(input("Infrese la letra a la que quiere disparar: ")),int(input("Ingrese la posición de la letra: ")))
-    return pos
-
-def generarDisparo(mapa,D, icono = "✨"):
-    mapa[D[0]][D[1]] = icono
-
-b  = Barco("lancha")
-corbeta1 = Barco("corbeta")
-corbeta2 = Barco("corbeta")
-corbeta3 = Barco("corbeta")
-fragata1 = Barco("fragata")
-acorazado1 = Barco("acorazado")
-
-print(corbeta1)
-print(corbeta2)
-print(corbeta3)
-print(fragata1)
-print(acorazado1)
-
-generarBarcos(mapa, corbeta1.coords)
-generarBarcos(mapa, corbeta2.coords)
-generarBarcos(mapa, corbeta3.coords)
-generarBarcos(mapa, fragata1.coords)
-generarBarcos(mapa, acorazado1.coords)
-
-
-
-fin = False
-while not fin:
-    posDisparo = generarPosDisparo(mapa)
-    generarDisparo(mapa, posDisparo)
-    generarMapaLleno(mapa)
-    if posDisparo[0]==corbeta3.coords[0] and posDisparo[1]==corbeta3.coords[1]:
-        print("MUY BIEN")
+def turnoDisparo(jugador, enemigo):
+    enemigo.mapa.imprimir()
+    while True:
+        try:
+            fila = int(input(f"{jugador.nombre}, fila (0-9): "))
+            col = int(input(f"{jugador.nombre}, columna (0-9): "))
+            if 0 <= fila <= 9 and 0 <= col <= 9:
+                break
+            else:
+                print("Valores fuera de rango.")
+        except:
+            print("Introduce números válidos.")
+    resultado = enemigo.mapa.disparar(fila, col)
+    if resultado == "tocado":
+        print("¡Barco tocado!")
+    elif resultado == "agua":
+        print("¡Agua tocada!")
     else:
-        print("MAL, GIL 🤸🏻")
+        print("¡Zona ya disparada!")
+    return resultado
+
+def quedan_barcos(jugador):
+    for fila in jugador.mapa.mapa:
+        if "⛵" in fila:
+            return True
+    return False
+
+turno = 1
+while True:
+    if turno == 1:
+        resultado = turnoDisparo(jugador1, jugador2)
+        if not quedan_barcos(jugador2):
+            print("¡A ha ganado! 🎉")
+            break
+        if resultado == "agua":
+            turno = 2
+    else:
+        resultado = turnoDisparo(jugador2, jugador1)
+        if not quedan_barcos(jugador1):
+            print("¡B ha ganado! 🎉")
+            break
+        if resultado == "agua":
+            turno = 1

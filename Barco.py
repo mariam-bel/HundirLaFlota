@@ -45,10 +45,13 @@ class Barco:
                 col = random.randint(0, 9)
                 fila_inicio = random.randint(0, 9 - size)
                 coordenada = [[fila_inicio + i, col] for i in range(size)]
-            coords.append(coordenada)
 
             if any(c in coords for c in coordenada):
                 continue
+
+            for c in coordenada:
+                coords.append(c)
+
             return coordenada
 
     def __str__(self):

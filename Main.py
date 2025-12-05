@@ -1,8 +1,8 @@
 from Jugador import Jugador
 from Barco import Barco
 
-jugador1 = Jugador("A")
-jugador2 = Jugador("B")
+jugador1 = Jugador("Jugador 1")
+jugador2 = Jugador("Jugador 2")
 
 barcosAcolocar = ["acorazado", "fragata", "fragata", "corbeta", "corbeta", "lancha", "lancha", "lancha"]
 
@@ -13,7 +13,19 @@ for nombre in barcosAcolocar:
     jugador2.mapa.colocarBarco(b2)
 
 def turnoDisparo(jugador, enemigo):
-    enemigo.mapa.imprimir()
+    print(f"\n{jugador.nombre} - tu mapa:")
+    jugador.mapa.imprimir()
+    print(f"\n{jugador.nombre} - mapa del enemigo:")
+    for i in range(10):
+        fila = []
+        for j in range(10):
+            val = enemigo.mapa.mapa[i][j]
+            if val == "🔥" or val == ".":
+                fila.append(val)
+            else:
+                fila.append("~")
+        print(fila)
+
     while True:
         try:
             fila = int(input(f"{jugador.nombre}, fila (0-9): "))
@@ -24,16 +36,18 @@ def turnoDisparo(jugador, enemigo):
                 print("Valores fuera de rango.")
         except:
             print("Introduce números válidos.")
-    resultado = enemigo.mapa.disparar(fila, col)
-    if resultado == "tocado":
-        print("¡Barco tocado!")
-    elif resultado == "agua":
-        print("¡Agua tocada!")
+    val = enemigo.mapa.mapa[fila][col]
+    if val == "⛵":
+        enemigo.mapa.mapa[fila][col] = "🔥"
+        print("¡Tocado!")
+    elif val == "~":
+        enemigo.mapa.mapa[fila][col] = "."
+        print("Agua…")
     else:
-        print("¡Zona ya disparada!")
-    return resultado
+        print("Ya habías disparado aquí.")
+    return val
 
-def quedan_barcos(jugador):
+def barcosRestantes(jugador):
     for fila in jugador.mapa.mapa:
         if "⛵" in fila:
             return True
@@ -43,15 +57,15 @@ turno = 1
 while True:
     if turno == 1:
         resultado = turnoDisparo(jugador1, jugador2)
-        if not quedan_barcos(jugador2):
-            print("¡A ha ganado! 🎉")
+        if not barcosRestantes(jugador2):
+            print("\n¡Jugador 1 ha ganado! 🎉")
             break
-        if resultado == "agua":
+        if resultado == "~":
             turno = 2
     else:
         resultado = turnoDisparo(jugador2, jugador1)
-        if not quedan_barcos(jugador1):
-            print("¡B ha ganado! 🎉")
+        if not barcosRestantes(jugador1):
+            print("\n¡Jugador 2 ha ganado! 🎉")
             break
-        if resultado == "agua":
+        if resultado == "~":
             turno = 1
